@@ -1,4 +1,4 @@
-FROM ubuntu:14.04
+FROM alpine:edge
 
 MAINTAINER Marcos Lois Bermuderz <marcos.lois@teratic.com>
 
@@ -7,13 +7,14 @@ MAINTAINER Marcos Lois Bermuderz <marcos.lois@teratic.com>
 # /usr/lib/xtables-addons/xt_geoip_build
 #
 
-RUN apt-get update
-RUN apt-get install -y xtables-addons-common wget unzip libtext-csv-xs-perl
+RUN apk add --no-cache --update xtables-addons perl perl-text-csv_xs
 
-ADD xt_build.sh /xt_build.sh
-RUN chmod 755 /xt_build.sh
+COPY xt_build.sh /
+RUN set -ex \
+    && chmod 755 /xt_build.sh \
+    && mkdir /xt_build \
+    && chmod 777 /xt_build
 
-RUN mkdir /xt_build
 VOLUME /xt_build
 
 CMD ["/xt_build.sh"]
